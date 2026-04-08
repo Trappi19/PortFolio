@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sevan - Portfolio Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Epilogue:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./src/styles/main.css" />
+  </head>
+  <body data-page="dashboard">
+    <div class="dashboard-bg" aria-hidden="true"></div>
+
+    <main class="dashboard-layout">
+      <header class="dashboard-header">
+        <div>
+          <p class="panel-label">Archive Console</p>
+          <h1>Project Dashboard</h1>
+          <p>Add and maintain portfolio projects. Data is saved in LocalStorage.</p>
+        </div>
+        <div class="dashboard-actions">
+          <a class="ritual-button ritual-button--ghost" href="index.html">Back to portfolio</a>
+          <button id="exportBtn" class="ritual-button" type="button">Export JSON</button>
+          <label class="ritual-button ritual-button--ghost file-button">
+            Import JSON
+            <input id="importInput" type="file" accept="application/json" />
+          </label>
+        </div>
+      </header>
+
+      <section class="dashboard-panel">
+        <h2>Add or edit a project</h2>
+        <form id="projectForm" class="dashboard-form">
+          <input type="hidden" name="id" />
+
+          <label>
+            Slug (unique id)
+            <input name="slug" required placeholder="ex: my-unity-game" pattern="[a-z0-9-]+" />
+          </label>
+
+          <div class="grid-2">
+            <label>
+              Title FR
+              <input name="titleFr" required />
+            </label>
+            <label>
+              Title EN
+              <input name="titleEn" required />
+            </label>
+          </div>
+
+          <div class="grid-2">
+            <label>
+              Description FR
+              <textarea name="descriptionFr" rows="3" required></textarea>
+            </label>
+            <label>
+              Description EN
+              <textarea name="descriptionEn" rows="3" required></textarea>
+            </label>
+          </div>
+
+          <div class="grid-3">
+            <label>
+              Category
+              <input name="category" placeholder="web, game, design..." required />
+            </label>
+            <label>
+              Tech tags (comma separated)
+              <input name="tags" placeholder="three.js, node, unity" required />
+            </label>
+            <label>
+              Accent color
+              <input name="accent" type="color" value="#d94f04" />
+            </label>
+          </div>
+
+          <div class="grid-2">
+            <label>
+              Project URL
+              <input name="url" type="url" placeholder="https://..." />
+            </label>
+            <label>
+              Repository URL
+              <input name="repo" type="url" placeholder="https://github.com/..." />
+            </label>
+          </div>
+
+          <label>
+            Cover image URL (optional)
+            <input name="image" type="url" placeholder="https://.../image.jpg" />
+          </label>
+
+          <label class="checkbox-row">
+            <input name="featured" type="checkbox" />
+            Featured project
+          </label>
+
+          <div class="dashboard-actions">
+            <button class="ritual-button" type="submit">Save project</button>
+            <button id="resetBtn" class="ritual-button ritual-button--ghost" type="button">Reset form</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="dashboard-panel">
+        <div class="panel-row">
+          <h2>Stored projects</h2>
+          <p id="statsLine" class="muted"></p>
+        </div>
+        <div id="projectTable" class="table-wrap" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <script type="module" src="./src/dashboard.js"></script>
+  </body>
+</html>

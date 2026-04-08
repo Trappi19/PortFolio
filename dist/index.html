@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sevan - Cult Portfolio V2</title>
+    <meta
+      name="description"
+      content="Interactive portfolio inspired by dark ritual fantasy art direction with a colorful village twist."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Epilogue:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.176.0/build/three.module.js",
+          "gsap": "https://cdn.jsdelivr.net/npm/gsap@3.13.0/index.js"
+        }
+      }
+    </script>
+    <script type="module" crossorigin src="/assets/index-BrarnWJA.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-IozIy8Qk.css">
+  </head>
+  <body data-page="portfolio">
+    <canvas id="scene-canvas" aria-hidden="true"></canvas>
+    <div class="atmosphere-layer" aria-hidden="true"></div>
+
+    <header id="oracleHeader" class="oracle-header">
+      <div class="brand-block">
+        <p class="brand-kicker">Ritual Archive</p>
+        <h1 class="brand-title">Sevan Quesnot</h1>
+      </div>
+      <nav class="top-nav" aria-label="Main sections">
+        <button class="top-nav__item" data-target="home">Home</button>
+        <button class="top-nav__item" data-target="projects">Projects</button>
+        <button class="top-nav__item" data-target="contact">Contact</button>
+        <a class="top-nav__item top-nav__item--link" href="dashboard.html">Dashboard</a>
+      </nav>
+      <div class="header-actions">
+        <button id="langToggle" class="ritual-button" type="button">FR</button>
+      </div>
+    </header>
+
+    <aside class="ritual-wheel" aria-label="Scene menu">
+      <div class="ritual-wheel__core" aria-hidden="true"><span>Home</span></div>
+      <button class="wheel-item is-active" data-target="home"><span class="wheel-item__sigil" aria-hidden="true"></span><span class="wheel-item__label">Invocation</span></button>
+      <button class="wheel-item" data-target="about"><span class="wheel-item__sigil" aria-hidden="true"></span><span class="wheel-item__label">Story</span></button>
+      <button class="wheel-item" data-target="projects"><span class="wheel-item__sigil" aria-hidden="true"></span><span class="wheel-item__label">Relics</span></button>
+      <button class="wheel-item" data-target="skills"><span class="wheel-item__sigil" aria-hidden="true"></span><span class="wheel-item__label">Skills</span></button>
+      <button class="wheel-item" data-target="experience"><span class="wheel-item__sigil" aria-hidden="true"></span><span class="wheel-item__label">Path</span></button>
+      <button class="wheel-item" data-target="contact"><span class="wheel-item__sigil" aria-hidden="true"></span><span class="wheel-item__label">Whisper</span></button>
+      <button class="wheel-item" data-target="cv"><span class="wheel-item__sigil" aria-hidden="true"></span><span class="wheel-item__label">Scrolls</span></button>
+      <button class="wheel-item" data-target="woolhaven"><span class="wheel-item__sigil" aria-hidden="true"></span><span class="wheel-item__label">Woolhaven</span></button>
+    </aside>
+
+    <main class="oracle-shell">
+      <div id="scrollProgress" class="scroll-progress" aria-hidden="true"></div>
+      <div id="contentScroller" class="oracle-content" tabindex="0">
+        <section id="home" class="panel-card panel-card--hero" data-section="home">
+          <p class="panel-label" data-i18n="label.home">Invocation Gate</p>
+          <h2 class="panel-title" data-i18n="home.title">I build interactive digital rituals.</h2>
+          <p class="panel-copy" data-i18n="home.copy">
+            Welcome to my world: software, game dev experimentation, and crafted interfaces where performance meets style.
+          </p>
+          <div class="hero-actions">
+            <button class="ritual-button" data-target="projects" data-i18n="home.ctaProjects">Explore projects</button>
+            <a class="ritual-button ritual-button--ghost" href="dashboard.html" data-i18n="home.ctaDashboard">Open dashboard</a>
+          </div>
+        </section>
+
+        <section id="about" class="panel-card" data-section="about">
+          <p class="panel-label" data-i18n="label.about">Story</p>
+          <h2 class="panel-title" data-i18n="about.title">About me</h2>
+          <p class="panel-copy" data-i18n="about.copy1">
+            I am Sevan, a young full-stack minded developer from France. I like expressive front-end systems and strong technical foundations.
+          </p>
+          <p class="panel-copy" data-i18n="about.copy2">
+            This V2 is built as a preconfigured system: you can plug content in quickly while keeping a premium look and motion language.
+          </p>
+        </section>
+
+        <section id="projects" class="panel-card" data-section="projects">
+          <div class="panel-headline-row">
+            <div>
+              <p class="panel-label" data-i18n="label.projects">Relics</p>
+              <h2 class="panel-title" data-i18n="projects.title">Projects</h2>
+            </div>
+            <a class="ritual-button ritual-button--ghost" href="dashboard.html" data-i18n="projects.manage">Manage in dashboard</a>
+          </div>
+          <div id="projectGrid" class="project-grid" aria-live="polite"></div>
+        </section>
+
+        <section id="skills" class="panel-card" data-section="skills">
+          <p class="panel-label" data-i18n="label.skills">Arsenal</p>
+          <h2 class="panel-title" data-i18n="skills.title">Skills</h2>
+          <div class="skill-cloud">
+            <span>JavaScript</span><span>TypeScript</span><span>Node.js</span><span>C#</span><span>Unity</span>
+            <span>Three.js</span><span>SQL</span><span>REST APIs</span><span>UI/UX</span><span>Git</span>
+          </div>
+          <p class="panel-copy" data-i18n="skills.copy">
+            Replace this list with your real stack or split by frontend, backend, and game-dev specializations.
+          </p>
+        </section>
+
+        <section id="experience" class="panel-card" data-section="experience">
+          <p class="panel-label" data-i18n="label.experience">Path</p>
+          <h2 class="panel-title" data-i18n="experience.title">Experience and studies</h2>
+          <ol class="timeline">
+            <li>
+              <h3 data-i18n="experience.step1Title">CESI - IT Developer path</h3>
+              <p data-i18n="experience.step1Copy">Add your school timeline, major courses, and key achievements.</p>
+            </li>
+            <li>
+              <h3 data-i18n="experience.step2Title">Personal game experiments</h3>
+              <p data-i18n="experience.step2Copy">Document your Unity projects, prototypes, and technical decisions.</p>
+            </li>
+            <li>
+              <h3 data-i18n="experience.step3Title">Freelance or team projects</h3>
+              <p data-i18n="experience.step3Copy">Add mission goals, your role, and measurable outcomes.</p>
+            </li>
+          </ol>
+        </section>
+
+        <section id="contact" class="panel-card" data-section="contact">
+          <p class="panel-label" data-i18n="label.contact">Whisper</p>
+          <h2 class="panel-title" data-i18n="contact.title">Contact me</h2>
+          <form id="contactForm" class="contact-form">
+            <label>
+              <span data-i18n="contact.name">Name</span>
+              <input name="name" required placeholder="Your name" data-i18n-placeholder="contact.placeholderName" />
+            </label>
+            <label>
+              <span>Email</span>
+              <input name="email" type="email" required placeholder="you@example.com" />
+            </label>
+            <label>
+              <span data-i18n="contact.message">Message</span>
+              <textarea name="message" rows="4" required data-i18n-placeholder="contact.placeholderMessage" placeholder="Tell me about your project"></textarea>
+            </label>
+            <button class="ritual-button" type="submit" data-i18n="contact.send">Send by email</button>
+          </form>
+        </section>
+
+        <section id="cv" class="panel-card" data-section="cv">
+          <p class="panel-label" data-i18n="label.cv">Scrolls</p>
+          <h2 class="panel-title" data-i18n="cv.title">CV and resume</h2>
+          <p class="panel-copy" data-i18n="cv.copy">Link your latest files here. Keep both FR and EN versions up to date.</p>
+          <div class="hero-actions">
+            <a class="ritual-button" href="../assets/documents/CV.pdf" target="_blank" rel="noreferrer" data-i18n="cv.downloadCv">Open CV</a>
+            <a class="ritual-button ritual-button--ghost" href="../assets/documents/Resume.pdf" target="_blank" rel="noreferrer" data-i18n="cv.downloadResume">Open resume</a>
+          </div>
+        </section>
+
+        <section id="woolhaven" class="panel-card panel-card--wool" data-section="woolhaven">
+          <p class="panel-label" data-i18n="label.woolhaven">Village</p>
+          <h2 class="panel-title" data-i18n="woolhaven.title">Woolhaven corner</h2>
+          <p class="panel-copy" data-i18n="woolhaven.copy">
+            A warmer area for playful projects, art, side quests, and content with a brighter tone.
+          </p>
+          <ul class="wool-list">
+            <li data-i18n="woolhaven.item1">Art direction experiments</li>
+            <li data-i18n="woolhaven.item2">Creative coding mini-scenes</li>
+            <li data-i18n="woolhaven.item3">Community and personal updates</li>
+          </ul>
+        </section>
+      </div>
+    </main>
+
+    <!-- Overlay Project Modal (Feature 3) -->
+    <div id="projectModal" class="project-modal" aria-hidden="true">
+      <div class="project-modal__backdrop"></div>
+      <div class="project-modal__content">
+        <button id="closeModalBtn" class="project-modal__close" aria-label="Close modal">×</button>
+        <div class="project-modal__header">
+          <div id="modalCover" class="project-modal__cover"></div>
+        </div>
+        <div class="project-modal__body">
+          <h2 id="modalTitle">Project Title</h2>
+          <div id="modalTags" class="project-tags"></div>
+          <p id="modalCategory" class="project-meta"></p>
+          <div class="project-modal__desc">
+            <p id="modalDescription">Detailed description goes here...</p>
+          </div>
+          <div id="modalLinks" class="project-links project-modal__actions">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>
