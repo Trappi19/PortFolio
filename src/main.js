@@ -2,6 +2,7 @@ import { gsap } from "gsap";
 import { applyTranslations, getLanguage, toggleLanguage } from "./i18n.js";
 import { getAllProjects } from "./projects-store.js";
 import { createCultScene } from "./scene.js";
+import AudioManager from "./audio.js";
 
 const scroller = document.getElementById("contentScroller");
 const sectionNodes = [...document.querySelectorAll("[data-section]")];
@@ -275,26 +276,28 @@ function spinWheel(deltaSteps) {
 
 function setActiveSection(sectionId, options = {}) {
   const targetIndex = getSectionIndex(sectionId);
-  if (targetIndex === -1) {
-    return;
-  }
+  const hasWheelTarget = targetIndex !== -1;
 
   const previousIndex = activeSectionIndex;
   currentSection = sectionId;
-  activeSectionIndex = targetIndex;
+  if (hasWheelTarget) {
+    activeSectionIndex = targetIndex;
+  }
 
   const theme = sectionThemes[sectionId] || sectionThemes.home;
   document.documentElement.style.setProperty("--primary-color", theme.primary);
   document.documentElement.style.setProperty("--background-color", theme.bg);
   document.documentElement.style.setProperty("--project-accent", theme.accent);
 
-  wheelButtons.forEach((button) => {
-    button.classList.toggle("is-active", button.dataset.target === sectionId);
-    button.setAttribute("aria-current", button.dataset.target === sectionId ? "true" : "false");
-  });
+  if (hasWheelTarget) {
+    wheelButtons.forEach((button) => {
+      button.classList.toggle("is-active", button.dataset.target === sectionId);
+      button.setAttribute("aria-current", button.dataset.target === sectionId ? "true" : "false");
+    });
 
-  if (wheelCoreLabel) {
-    wheelCoreLabel.textContent = sectionLabels[sectionId] || sectionId;
+    if (wheelCoreLabel) {
+      wheelCoreLabel.textContent = sectionLabels[sectionId] || sectionId;
+    }
   }
 
   sectionNodes.forEach((section) => {
@@ -303,18 +306,20 @@ function setActiveSection(sectionId, options = {}) {
     section.classList.toggle("is-active", section.id === sectionId);
   });
 
-  const deltaSteps = options.direction ?? getWheelDelta(previousIndex, targetIndex);
-  spinWheel(deltaSteps);
+  if (hasWheelTarget) {
+    const deltaSteps = options.direction ?? getWheelDelta(previousIndex, targetIndex);
+    spinWheel(deltaSteps);
 
-  wheelButtons.forEach((btn, idx) => {
-    const isActive = idx === targetIndex;
-    gsap.to(btn, {
-      scale: isActive ? 1.15 : 0.88,
-      opacity: isActive ? 1 : 0.5,
-      duration: 0.6,
-      ease: "power2.out"
+    wheelButtons.forEach((btn, idx) => {
+      const isActive = idx === targetIndex;
+      gsap.to(btn, {
+        scale: isActive ? 1.15 : 0.88,
+        opacity: isActive ? 1 : 0.5,
+        duration: 0.6,
+        ease: "power2.out"
+      });
     });
-  });
+  }
 
   document.body.dataset.section = sectionId;
 
@@ -452,3 +457,6 @@ gsap.from(".panel-card", {
 
 updateLanguageUI();
 setActiveSection(currentSection);
+
+// Initialize audio manager
+AudioManager.init();

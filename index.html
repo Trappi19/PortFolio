@@ -37,6 +37,7 @@
         <button class="top-nav__item" data-target="home">Home</button>
         <button class="top-nav__item" data-target="projects">Projects</button>
         <button class="top-nav__item" data-target="contact">Contact</button>
+        <button class="top-nav__item" data-target="credits">Credits</button>
         <a class="top-nav__item top-nav__item--link" href="dashboard.html">Dashboard</a>
       </nav>
       <div class="header-actions">
@@ -166,6 +167,26 @@
             <li data-i18n="woolhaven.item3">Community and personal updates</li>
           </ul>
         </section>
+
+        <section id="credits" class="panel-card" data-section="credits">
+          <p class="panel-label">Credits</p>
+          <h2 class="panel-title">Credits and Attribution</h2>
+          <p class="panel-copy">
+            This portfolio page was designed and developed by Sevan Quesnot.
+          </p>
+          <p class="panel-copy">
+            Audio tracks, visual assets, logos, and universe references used here belong to their respective owners and are used for non-commercial portfolio presentation.
+          </p>
+          <p class="panel-copy">
+            Cult of the Lamb related names, music, and artwork are property of Massive Monster and Devolver Digital.
+          </p>
+          <p class="panel-copy">
+            No ownership is claimed over third-party game assets or original media used in this project.
+          </p>
+          <p class="panel-copy">
+            Thanks @MassiveMonster for creating such an inspiring universe and @DevolverDigital for publishing it!
+          </p> R.I.P @RiverBoy, and thanks for this amazing soundtrack that fuels my creativity.
+        </section>
       </div>
     </main>
 
@@ -189,6 +210,61 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Audio Control Panel -->
+    <aside id="audioControlPanel" class="audio-control">
+      <div class="audio-control__content">
+        <div class="audio-control__info">
+          <span class="audio-control__icon" aria-hidden="true">♪</span>
+          <span id="audioTitle" class="audio-control__title">Loading...</span>
+        </div>
+        <div class="audio-control__actions">
+          <button
+            id="audioMuteBtn"
+            class="audio-control__btn audio-control__mute"
+            aria-label="Toggle audio mute"
+            aria-pressed="false"
+            title="Mute audio"
+          >
+            <svg class="audio-control__icon-unmuted" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            </svg>
+            <svg class="audio-control__icon-muted" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <line x1="23" y1="9" x2="17" y2="15"></line>
+              <line x1="17" y1="9" x2="23" y2="15"></line>
+            </svg>
+          </button>
+          <button
+            id="audioToggleBtn"
+            class="audio-control__btn audio-control__toggle"
+            aria-label="Toggle panel visibility"
+            title="Hide panel"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <button
+      id="audioPanelLauncher"
+      class="audio-control-launcher"
+      type="button"
+      aria-label="Show audio panel"
+      title="Show audio panel"
+      hidden
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <polyline points="18 15 12 9 6 15"></polyline>
+      </svg>
+    </button>
+
+    <div id="audioAutoplayHint" class="audio-autoplay-hint" hidden>
+      Click to start audio
     </div>
 
     <script type="module" src="./src/main.js"></script>
