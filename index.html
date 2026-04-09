@@ -25,6 +25,7 @@
     </script>
   </head>
   <body data-page="portfolio">
+    <div class="site-launch-fade" aria-hidden="true"></div>
     <canvas id="scene-canvas" aria-hidden="true"></canvas>
     <div class="atmosphere-layer" aria-hidden="true"></div>
 
@@ -38,7 +39,6 @@
         <button class="top-nav__item" data-target="projects">Projects</button>
         <button class="top-nav__item" data-target="contact">Contact</button>
         <button class="top-nav__item" data-target="credits">Credits</button>
-        <a class="top-nav__item top-nav__item--link" href="dashboard.html">Dashboard</a>
       </nav>
       <div class="header-actions">
         <button id="langToggle" class="ritual-button" type="button">FR</button>
@@ -68,7 +68,6 @@
           </p>
           <div class="hero-actions">
             <button class="ritual-button" data-target="projects" data-i18n="home.ctaProjects">Explore projects</button>
-            <a class="ritual-button ritual-button--ghost" href="dashboard.html" data-i18n="home.ctaDashboard">Open dashboard</a>
           </div>
         </section>
 
@@ -89,7 +88,6 @@
               <p class="panel-label" data-i18n="label.projects">Relics</p>
               <h2 class="panel-title" data-i18n="projects.title">Projects</h2>
             </div>
-            <a class="ritual-button ritual-button--ghost" href="dashboard.html" data-i18n="projects.manage">Manage in dashboard</a>
           </div>
           <div id="projectGrid" class="project-grid" aria-live="polite"></div>
         </section>

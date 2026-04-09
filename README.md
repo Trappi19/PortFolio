@@ -9,7 +9,6 @@ Your existing portfolio files were not modified.
 - Three.js
 - GSAP
 - Vanilla JS modules
-- LocalStorage persistence for dashboard data
 
 ## Run locally
 
@@ -32,20 +31,12 @@ npm run preview
 ## Pages
 
 - Portfolio: /index.html
-- Dashboard: /dashboard.html
 
 ## How project data works
 
-1. Open dashboard.
-2. Create or edit a project.
-3. Saved projects are stored in browser LocalStorage key: cultPortfolioProjects.v2.
-4. Portfolio page merges default projects + custom projects.
-5. If a custom project has same slug as a default one, it overrides it.
-
-## JSON import/export
-
-- Export button downloads custom projects JSON.
-- Import accepts a JSON array of projects.
+1. Open src/data/default-projects.js.
+2. Add or edit project objects manually.
+3. Portfolio page renders that list directly.
 
 ## Quick customization checklist
 

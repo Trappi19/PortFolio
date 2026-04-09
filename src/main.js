@@ -16,7 +16,6 @@ const projectGrid = document.getElementById("projectGrid");
 const contactForm = document.getElementById("contactForm");
 const sceneCanvas = document.getElementById("scene-canvas");
 const projectSection = document.getElementById("projects");
-const dashboardLinks = [...document.querySelectorAll('a[href="dashboard.html"]')];
 const wheelIndexMap = new Map(wheelButtons.map((button) => [button.dataset.target, button]));
 const wheelCoreLabel = document.querySelector(".ritual-wheel__core span");
 const sectionOrder = ["home", "about", "projects", "skills", "experience", "contact", "cv", "woolhaven"];
@@ -101,7 +100,7 @@ function renderProjects() {
 
   if (!projects.length) {
     projectGrid.innerHTML = `<p class="panel-copy">${
-      lang === "fr" ? "Aucun projet. Ajoute-en depuis le dashboard." : "No project yet. Add one from the dashboard."
+      lang === "fr" ? "Aucun projet pour le moment. Ajoute-en dans src/data/default-projects.js." : "No project yet. Add one in src/data/default-projects.js."
     }</p>`;
     return;
   }
@@ -403,12 +402,6 @@ window.addEventListener(
   },
   { passive: false }
 );
-
-dashboardLinks.forEach((link) => {
-  link.addEventListener("click", () => {
-    scene.setBossTransition("projects");
-  });
-});
 
 langToggle.addEventListener("click", () => {
   toggleLanguage();
