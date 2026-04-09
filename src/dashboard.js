@@ -12,6 +12,55 @@ const projectTable = document.getElementById("projectTable");
 const statsLine = document.getElementById("statsLine");
 const exportBtn = document.getElementById("exportBtn");
 const importInput = document.getElementById("importInput");
+const imagePreviewImg = document.getElementById("imagePreviewImg");
+const imagePreviewFallback = document.getElementById("imagePreviewFallback");
+
+function resolveImageUrl(value) {
+  const image = String(value || "").trim();
+  if (!image) {
+    return "";
+  }
+
+  if (/^(https?:|data:|blob:|file:)/i.test(image)) {
+    return image;
+  }
+
+  try {
+    return new URL(image, window.location.href).href;
+  } catch {
+    return image;
+  }
+}
+
+function updateImagePreview(value) {
+  const imageUrl = resolveImageUrl(value);
+  if (!imageUrl || !imagePreviewImg || !imagePreviewFallback) {
+    if (imagePreviewImg) {
+      imagePreviewImg.hidden = true;
+      imagePreviewImg.removeAttribute("src");
+    }
+    if (imagePreviewFallback) {
+      imagePreviewFallback.hidden = false;
+      imagePreviewFallback.textContent = "No image selected.";
+    }
+    return;
+  }
+
+  imagePreviewImg.hidden = false;
+  imagePreviewImg.src = imageUrl;
+  imagePreviewFallback.hidden = true;
+
+  imagePreviewImg.onerror = () => {
+    imagePreviewImg.hidden = true;
+    imagePreviewImg.removeAttribute("src");
+    imagePreviewFallback.hidden = false;
+    imagePreviewFallback.textContent = "Image cannot be loaded. Check the URL/path.";
+  };
+
+  imagePreviewImg.onload = () => {
+    imagePreviewFallback.hidden = true;
+  };
+}
 
 function collectFormData(form) {
   const formData = new FormData(form);
@@ -33,6 +82,15 @@ function collectFormData(form) {
   };
 }
 
+function createThumbCell(project) {
+  const src = project.image || "";
+  if (!src) {
+    return '<span class="muted">-</span>';
+  }
+
+  return `<img class="table-thumb" src="${src}" alt="${project.title.en}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'), { className: 'muted', textContent: 'invalid' }))" />`;
+}
+
 function renderTable() {
   const projects = getCustomProjects();
 
@@ -47,6 +105,7 @@ function renderTable() {
     <table>
       <thead>
         <tr>
+          <th>Image</th>
           <th>Slug</th>
           <th>Title EN</th>
           <th>Category</th>
@@ -59,6 +118,7 @@ function renderTable() {
           .map(
             (project) => `
               <tr>
+                <td>${createThumbCell(project)}</td>
                 <td>${project.slug}</td>
                 <td>${project.title.en}</td>
                 <td>${project.category}</td>
@@ -90,12 +150,14 @@ function fillForm(project) {
   projectForm.elements.repo.value = project.repo;
   projectForm.elements.image.value = project.image;
   projectForm.elements.featured.checked = project.featured;
+  updateImagePreview(project.image);
 }
 
 function clearForm() {
   projectForm.reset();
   projectForm.elements.id.value = "";
   projectForm.elements.accent.value = "#d94f04";
+  updateImagePreview("");
 }
 
 projectForm.addEventListener("submit", (event) => {
@@ -178,4 +240,9 @@ importInput.addEventListener("change", async () => {
   }
 });
 
+projectForm.elements.image.addEventListener("input", (event) => {
+  updateImagePreview(event.target.value);
+});
+
 renderTable();
+updateImagePreview("");

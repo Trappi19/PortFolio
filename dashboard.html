@@ -93,7 +93,13 @@
           <label>
             Cover image URL (optional)
             <input name="image" type="url" placeholder="https://.../image.jpg" />
+            <p class="muted input-hint">Use absolute URL or local path like ./sprites/Goat_Idle.webp</p>
           </label>
+
+          <div id="imagePreview" class="image-preview" aria-live="polite">
+            <img id="imagePreviewImg" alt="Project cover preview" hidden />
+            <p id="imagePreviewFallback" class="image-preview__fallback">No image selected.</p>
+          </div>
 
           <label class="checkbox-row">
             <input name="featured" type="checkbox" />

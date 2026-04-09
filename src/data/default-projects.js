@@ -13,7 +13,7 @@ export const defaultProjects = [
     category: "game",
     tags: ["Unity", "C#", "Gameplay"],
     accent: "#b90f0a",
-    image: "../images/portfolio/portfolio-1.jpg",
+    image: "./sprites/Lamb_Cards_Loop.webp",
     url: "",
     repo: "",
     featured: true
@@ -32,7 +32,7 @@ export const defaultProjects = [
     category: "design",
     tags: ["Digital Art", "Print", "Curation"],
     accent: "#cf7300",
-    image: "../images/portfolio/portfolio-2.jpg",
+    image: "./sprites/Main_menu-animation.gif",
     url: "",
     repo: "",
     featured: false
@@ -51,7 +51,7 @@ export const defaultProjects = [
     category: "design",
     tags: ["Illustration", "Visual", "Branding"],
     accent: "#d94f04",
-    image: "../images/portfolio/portfolio-3.jpg",
+    image: "./sprites/Lamb_posted_in_Twitter.webp",
     url: "",
     repo: "",
     featured: true

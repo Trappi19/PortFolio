@@ -2,6 +2,27 @@ import { defaultProjects } from "./data/default-projects.js";
 
 const STORAGE_KEY = "cultPortfolioProjects.v2";
 
+function normalizeImageSource(rawImage) {
+  const image = String(rawImage || "").trim();
+  if (!image) {
+    return "";
+  }
+
+  if (/^(https?:|data:|blob:|file:)/i.test(image)) {
+    return image;
+  }
+
+  if (typeof window === "undefined" || !window.location) {
+    return image;
+  }
+
+  try {
+    return new URL(image, window.location.href).href;
+  } catch {
+    return image;
+  }
+}
+
 function readRawCustomProjects() {
   const raw = localStorage.getItem(STORAGE_KEY);
   if (!raw) {
@@ -40,7 +61,7 @@ function normalizeProject(input) {
     category: String(input?.category || "general"),
     tags,
     accent: String(input?.accent || "#d94f04"),
-    image: String(input?.image || ""),
+    image: normalizeImageSource(input?.image),
     url: String(input?.url || ""),
     repo: String(input?.repo || ""),
     featured: Boolean(input?.featured)

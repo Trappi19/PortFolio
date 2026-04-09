@@ -11,6 +11,22 @@
   --panel: rgba(17, 12, 11, 0.8);
   --panel-strong: rgba(9, 6, 6, 0.94);
   --panel-glow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  --top-nav-font-size: 1rem;
+  --top-nav-padding-y: 0.78rem;
+  --top-nav-padding-x: 1.15rem;
+  --top-nav-min-height: 3rem;
+  --ritual-button-font-size: 1rem;
+  --ritual-button-padding-y: 0.94rem;
+  --ritual-button-padding-x: 1.3rem;
+  --ritual-button-radius: 12px;
+  --wheel-size: 560px;
+  --wheel-left: -220px;
+  --wheel-core-size: 132px;
+  --wheel-item-width: min(220px, 28vw);
+  --wheel-item-font-size: 1.5rem;
+  --wheel-item-min-height: 3.4rem;
+  --project-card-min-width: 220px;
+  --project-card-media-height: 270px;
 }
 
 @keyframes emberDrift {
@@ -153,10 +169,10 @@ a {
   border: 1px solid transparent;
   background: rgba(255, 255, 255, 0.06);
   color: var(--ink-soft);
-  padding: 0.68rem 1rem;
-  min-height: 2.75rem;
+  padding: var(--top-nav-padding-y) var(--top-nav-padding-x);
+  min-height: var(--top-nav-min-height);
   border-radius: 999px;
-  font-size: 0.94rem;
+  font-size: var(--top-nav-font-size);
   cursor: pointer;
   text-decoration: none;
   transition: 220ms ease;
@@ -221,10 +237,10 @@ textarea:focus-visible {
   border: 1px solid rgba(255, 166, 111, 0.7);
   background: linear-gradient(135deg, #a93000, #ef6500);
   color: #fff3e8;
-  border-radius: 12px;
-  padding: 0.82rem 1.2rem;
+  border-radius: var(--ritual-button-radius);
+  padding: var(--ritual-button-padding-y) var(--ritual-button-padding-x);
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: var(--ritual-button-font-size);
   letter-spacing: 0.02em;
   text-decoration: none;
   cursor: pointer;
@@ -244,14 +260,17 @@ textarea:focus-visible {
 .ritual-wheel {
   position: fixed;
   z-index: 18;
-  left: -190px;
+  left: var(--wheel-left);
   top: 50%;
-  width: 480px;
-  height: 480px;
+  width: var(--wheel-size);
+  height: var(--wheel-size);
   transform: translateY(-50%);
   pointer-events: none;
-  perspective: 1000px;
   border-radius: 50%;
+}
+
+body.wheel-tilt-enabled .ritual-wheel {
+  perspective: 1000px;
 }
 
 .ritual-wheel::before {
@@ -279,8 +298,8 @@ textarea:focus-visible {
   left: 50%;
   top: 50%;
   z-index: 2;
-  width: 110px;
-  height: 110px;
+  width: var(--wheel-core-size);
+  height: var(--wheel-core-size);
   display: grid;
   place-items: center;
   transform: translate(-50%, -50%);
@@ -311,7 +330,7 @@ textarea:focus-visible {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: min(190px, 22vw);
+  width: var(--wheel-item-width);
   margin-top: -20px;
   transform-origin: 0 center;
   pointer-events: auto;
@@ -325,12 +344,15 @@ textarea:focus-visible {
   background: rgba(9, 5, 5, 0.52);
   color: var(--ink-soft);
   padding: 0.8rem 1rem;
-  font-size: 0.92rem;
-  min-height: 3rem;
+  font-size: var(--wheel-item-font-size);
+  min-height: var(--wheel-item-min-height);
   cursor: pointer;
   transition: background 210ms ease, color 210ms ease, border-color 210ms ease;
-  transform-style: preserve-3d;
   backdrop-filter: blur(8px);
+}
+
+body.wheel-tilt-enabled .wheel-item {
+  transform-style: preserve-3d;
 }
 
 .wheel-item__sigil {
@@ -541,7 +563,7 @@ textarea:focus-visible {
 }
 
 .project-grid {
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(var(--project-card-min-width), 1fr));
 }
 
 .project-card__body h3,
@@ -555,11 +577,12 @@ textarea:focus-visible {
 
 .project-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(var(--project-card-min-width), 1fr));
   gap: 0.8rem;
 }
 
 .project-card {
+  position: relative;
   border: 1px solid color-mix(in srgb, var(--project-accent, #d94f04) 55%, #ffffff 10%);
   border-radius: 14px;
   overflow: hidden;
@@ -574,15 +597,18 @@ textarea:focus-visible {
 
 .project-card__media {
   position: relative;
-  aspect-ratio: 16 / 9;
+  height: var(--project-card-media-height);
   overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.28);
 }
 
 .project-card__media img,
 .project-placeholder {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .project-card__media img {
@@ -590,8 +616,29 @@ textarea:focus-visible {
 }
 
 .project-card:hover .project-card__media img {
-  transform: scale(1.04);
   filter: saturate(1.08);
+}
+
+.project-card__quick {
+  position: absolute;
+  left: 0.55rem;
+  right: 0.55rem;
+  bottom: 0.5rem;
+  margin: 0;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid rgba(255, 214, 182, 0.36);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(12, 8, 8, 0.5), rgba(12, 8, 8, 0.85));
+  backdrop-filter: blur(3px);
+  font-family: "Cinzel", serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: center;
+  color: #fff1dc;
+  pointer-events: none;
+  transition: opacity 250ms ease, transform 250ms ease;
 }
 
 .project-placeholder {
@@ -607,7 +654,31 @@ textarea:focus-visible {
 }
 
 .project-card__body {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
   padding: 0.75rem;
+  background: linear-gradient(180deg, rgba(7, 4, 4, 0.15), rgba(8, 5, 5, 0.95) 26%, rgba(8, 5, 5, 0.99));
+  border-top: 1px solid rgba(255, 212, 180, 0.24);
+  transform: translateY(100%);
+  opacity: 0;
+  transition: transform 300ms ease, opacity 240ms ease;
+}
+
+.project-card:hover .project-card__body,
+.project-card:focus-visible .project-card__body,
+.project-card:focus-within .project-card__body {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.project-card:hover .project-card__quick,
+.project-card:focus-visible .project-card__quick,
+.project-card:focus-within .project-card__quick {
+  opacity: 0;
+  transform: translateY(8px);
 }
 
 .project-card__body h3 {
@@ -647,6 +718,18 @@ textarea:focus-visible {
   margin-top: 0.68rem;
   display: flex;
   gap: 0.5rem;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .project-card__quick {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  .project-card__body {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .project-links a {
@@ -879,6 +962,45 @@ td {
   border-color: rgba(255, 142, 142, 0.7);
 }
 
+.input-hint {
+  margin: 0.2rem 0 0;
+  font-size: 0.8rem;
+}
+
+.image-preview {
+  margin-top: 0.6rem;
+  border: 1px solid rgba(255, 224, 191, 0.2);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  min-height: 110px;
+  padding: 0.55rem;
+  display: grid;
+  place-items: center;
+}
+
+.image-preview img {
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.image-preview__fallback {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+  text-align: center;
+}
+
+.table-thumb {
+  width: 76px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 221, 190, 0.28);
+  background: rgba(255, 255, 255, 0.05);
+}
+
 .muted {
   color: var(--ink-muted);
 }
@@ -917,8 +1039,8 @@ td {
   }
 
   .top-nav__item {
-    font-size: 0.75rem;
-    padding: 0.35rem 0.55rem;
+    font-size: 0.82rem;
+    padding: 0.45rem 0.7rem;
   }
 
   .panel-card {
@@ -984,10 +1106,12 @@ td {
   height: 250px;
   border-bottom: 4px solid var(--primary-color);
   background: var(--bg-lighter);
+  overflow: hidden;
 }
 .project-modal__cover {
   width: 100%; height: 100%;
-  background-size: cover; background-position: center; background-repeat: no-repeat;
+  background-size: contain; background-position: center; background-repeat: no-repeat;
+  background-color: rgba(0, 0, 0, 0.25);
 }
 .project-modal__body { padding: 2rem; }
 .project-modal__body h2 {

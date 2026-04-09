@@ -62,6 +62,7 @@ function openProjectModal(project, lang) {
   modalDescription.innerHTML = description.replace(/\n/g, "<br>");
   modalTags.innerHTML = tags;
   modalCover.style.backgroundImage = project.image ? `url(${project.image})` : "none";
+  modalCover.style.backgroundColor = project.image ? "transparent" : "rgba(255, 255, 255, 0.04)";
 
   const links = [
     project.url ? `<a href="${project.url}" target="_blank" rel="noreferrer">Live Demo</a>` : "",
@@ -113,6 +114,11 @@ function renderProjects() {
     const tags = project.tags.map((tag) => `<span>${tag}</span>`).join("");
     const title = project.title[lang] || project.title.en;
     const description = project.description[lang] || project.description.en;
+    const shortTitle = title
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .join(" ");
 
     const media = project.image
       ? `<img src="${project.image}" alt="${title}" loading="lazy" />`
@@ -126,7 +132,10 @@ function renderProjects() {
       .join("");
 
     card.innerHTML = `
-      <div class="project-card__media">${media}</div>
+      <div class="project-card__media">
+        ${media}
+        <p class="project-card__quick">${shortTitle || title}</p>
+      </div>
       <div class="project-card__body">
         <p class="project-meta">${project.category}${project.featured ? " • Featured" : ""}</p>
         <h3>${title}</h3>
@@ -145,6 +154,17 @@ function renderProjects() {
       }
     });
 
+    const imageNode = card.querySelector(".project-card__media img");
+    if (imageNode) {
+      imageNode.addEventListener("error", () => {
+        imageNode.remove();
+        const placeholder = document.createElement("div");
+        placeholder.className = "project-placeholder";
+        placeholder.innerHTML = `<span>${title.slice(0, 2).toUpperCase()}</span>`;
+        card.querySelector(".project-card__media")?.append(placeholder);
+      });
+    }
+
     projectGrid.append(card);
   });
 }
@@ -156,11 +176,23 @@ const sectionThemes = {
   contact: { primary: "#8c52ff", bg: "#06040d", accent: "#c4a3ff" }
 };
 
-const RADIUS = 210;
+const wheelSize = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--wheel-size"));
+const RADIUS = Number.isFinite(wheelSize) ? Math.round(wheelSize * 0.44) : 210;
 const totalNodes = wheelButtons.length;
 const angleStep = 360 / totalNodes;
 
-// Initialize 3D Orbital Wheel
+// Set to true to re-enable 3D tilt/deformation while the wheel rotates.
+const ENABLE_WHEEL_TILT = false;
+const WHEEL_TILT = {
+  wheelX: 12,
+  wheelY: -16,
+  coreX: -12,
+  coreY: 16
+};
+
+document.body.classList.toggle("wheel-tilt-enabled", ENABLE_WHEEL_TILT);
+
+// Initialize orbital wheel
 wheelButtons.forEach((btn, idx) => {
   btn.dataset.wheelIndex = idx;
   gsap.set(btn, {
@@ -172,14 +204,22 @@ wheelButtons.forEach((btn, idx) => {
 
 gsap.set(".ritual-wheel", {
   rotation: wheelRotation,
-  rotationX: 12,
-  rotationY: -16
+  ...(ENABLE_WHEEL_TILT
+    ? {
+        rotationX: WHEEL_TILT.wheelX,
+        rotationY: WHEEL_TILT.wheelY
+      }
+    : {})
 });
 
 gsap.set(".ritual-wheel__core span", {
   rotation: -wheelRotation,
-  rotationX: -12,
-  rotationY: 16
+  ...(ENABLE_WHEEL_TILT
+    ? {
+        rotationX: WHEEL_TILT.coreX,
+        rotationY: WHEEL_TILT.coreY
+      }
+    : {})
 });
 
 function getSectionIndex(sectionId) {
@@ -210,16 +250,24 @@ function spinWheel(deltaSteps) {
 
   gsap.to(".ritual-wheel", {
     rotation: wheelRotation,
-    rotationX: 12,
-    rotationY: -16,
+    ...(ENABLE_WHEEL_TILT
+      ? {
+          rotationX: WHEEL_TILT.wheelX,
+          rotationY: WHEEL_TILT.wheelY
+        }
+      : {}),
     duration: 0.85,
     ease: "power3.out"
   });
 
   gsap.to(".ritual-wheel__core span", {
     rotation: -wheelRotation,
-    rotationX: -12,
-    rotationY: 16,
+    ...(ENABLE_WHEEL_TILT
+      ? {
+          rotationX: WHEEL_TILT.coreX,
+          rotationY: WHEEL_TILT.coreY
+        }
+      : {}),
     duration: 0.85,
     ease: "power3.out"
   });
