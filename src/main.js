@@ -1,7 +1,6 @@
 import { gsap } from "gsap";
 import { applyTranslations, getLanguage, toggleLanguage } from "./i18n.js";
 import { getAllProjects } from "./projects-store.js";
-import { createCultScene } from "./scene.js";
 import AudioManager from "./audio.js";
 
 const scroller = document.getElementById("contentScroller");
@@ -14,10 +13,9 @@ const header = document.getElementById("oracleHeader");
 const progressBar = document.getElementById("scrollProgress");
 const projectGrid = document.getElementById("projectGrid");
 const contactForm = document.getElementById("contactForm");
-const sceneCanvas = document.getElementById("scene-canvas");
-const projectSection = document.getElementById("projects");
-const wheelIndexMap = new Map(wheelButtons.map((button) => [button.dataset.target, button]));
 const wheelCoreLabel = document.querySelector(".ritual-wheel__core span");
+const backgroundVideo = document.getElementById("backgroundVideo");
+const backgroundFade = document.getElementById("backgroundFade");
 const sectionOrder = ["home", "about", "projects", "skills", "experience", "contact", "cv", "woolhaven"];
 const sectionLabels = {
   home: "Home",
@@ -30,11 +28,28 @@ const sectionLabels = {
   woolhaven: "Woolhaven"
 };
 
-const scene = createCultScene(sceneCanvas);
+const sectionVideos = {
+  home: "Game teaser.mp4",
+  about: "Cult of The Lamb † Reveal Trailer [tp-k9mnXutE].webm",
+  projects: "Cult of the Lamb ｜ Launch Trailer [xsPtUNB1z-Q].mp4",
+  skills: "Cult of the Lamb ｜ Sinful Pack Available Now! [e0J14QGhow0].mp4",
+  experience: "Cult of the Lamb ｜ Sins of the Flesh Launch Trailer [dsCUA_VQ5Nw].mp4",
+  contact: "Cult of the Lamb ｜ Unholy Alliance Launch Trailer [rjeyYMuGZgU].mp4",
+  cv: "Cult of the Lamb - Official Woolhaven Launch Trailer [blFTLCBS9Jc].webm",
+  woolhaven: "Woolhaven.mp4",
+  credits: "Crédit.webm"
+};
+const videoBaseUrl = new URL("../vid/", import.meta.url);
+const transitionDuration = 420;
+const blackoutFadeDuration = 180;
+const loopPauseDuration = 120;
+
 let currentSection = "home";
 let activeSectionIndex = 0;
 let wheelRotation = 0;
 let sectionTransitionLock = false;
+let backgroundTransitionTimer = null;
+let backgroundSwitchTimer = null;
 
 function updateLanguageUI() {
   const lang = getLanguage();
@@ -167,6 +182,69 @@ function renderProjects() {
 
     projectGrid.append(card);
   });
+}
+
+function getBackgroundVideoUrl(sectionId) {
+  const filename = sectionVideos[sectionId] || sectionVideos.home;
+  return new URL(filename, videoBaseUrl).href;
+}
+
+function setBackgroundVideo(sectionId, { force = false } = {}) {
+  if (!backgroundVideo) {
+    return;
+  }
+
+  const nextSource = getBackgroundVideoUrl(sectionId);
+
+  if (!force && backgroundVideo.dataset.section === sectionId && backgroundVideo.currentSrc === nextSource) {
+    return;
+  }
+
+  backgroundVideo.dataset.section = sectionId;
+
+  if (backgroundVideo.currentSrc !== nextSource) {
+    backgroundVideo.src = nextSource;
+    backgroundVideo.load();
+  }
+
+  backgroundVideo.play().catch(() => {
+    // Muted autoplay should work, but some browsers still defer until the first gesture.
+  });
+}
+
+function setBackgroundFadeVisible(visible) {
+  if (!backgroundFade) {
+    return;
+  }
+
+  backgroundFade.classList.toggle("is-visible", visible);
+}
+
+function transitionBackgroundVideo(sectionId, { restartCurrent = false } = {}) {
+  if (!backgroundVideo) {
+    return;
+  }
+
+  setBackgroundFadeVisible(true);
+
+  window.clearTimeout(backgroundTransitionTimer);
+  window.clearTimeout(backgroundSwitchTimer);
+
+  backgroundSwitchTimer = window.setTimeout(() => {
+    if (restartCurrent) {
+      backgroundVideo.currentTime = 0;
+      backgroundVideo.play().catch(() => {
+        // Playback can still wait for a user gesture in strict autoplay contexts.
+      });
+      return;
+    }
+
+    setBackgroundVideo(sectionId, { force: true });
+  }, blackoutFadeDuration + (restartCurrent ? loopPauseDuration : 0));
+
+  backgroundTransitionTimer = window.setTimeout(() => {
+    setBackgroundFadeVisible(false);
+  }, transitionDuration);
 }
 
 const sectionThemes = {
@@ -326,8 +404,6 @@ function setActiveSection(sectionId, options = {}) {
     button.classList.toggle("is-active", button.dataset.target === sectionId);
   });
 
-  scene.focusSection(sectionId);
-
   const activeSection = document.getElementById(sectionId);
   if (activeSection) {
     gsap.fromTo(
@@ -349,20 +425,12 @@ function navigateToSection(sectionId, options = {}) {
 
   if (!options.skipLock) {
     sectionTransitionLock = true;
-    document.body.classList.add("is-transitioning");
     setTimeout(() => {
       sectionTransitionLock = false;
-      document.body.classList.remove("is-transitioning");
-    }, 420);
-  } else {
-    document.body.classList.add("is-transitioning");
-    window.clearTimeout(navigateToSection.transitionTimer);
-    navigateToSection.transitionTimer = window.setTimeout(() => {
-      document.body.classList.remove("is-transitioning");
-    }, 220);
+    }, transitionDuration);
   }
 
-  scene.setBossTransition(sectionId);
+  transitionBackgroundVideo(sectionId);
 
   setActiveSection(sectionId, options);
 }
@@ -408,12 +476,6 @@ langToggle.addEventListener("click", () => {
   updateLanguageUI();
 });
 
-wheelIndexMap.forEach((button, sectionId) => {
-  button.addEventListener("mouseenter", () => {
-    scene.focusSection(sectionId);
-  });
-});
-
 contactForm.addEventListener("submit", (event) => {
   event.preventDefault();
 
@@ -425,10 +487,6 @@ contactForm.addEventListener("submit", (event) => {
   const subject = encodeURIComponent(`Portfolio contact from ${name}`);
   const body = encodeURIComponent(`${message}\n\nFrom: ${name}\nEmail: ${email}`);
   window.location.href = `mailto:contacttrappi@gmail.com?subject=${subject}&body=${body}`;
-});
-
-projectSection?.addEventListener("mouseenter", () => {
-  scene.setBossTransition("projects");
 });
 
 gsap.from(".brand-block, .top-nav, .ritual-wheel, .oracle-shell", {
@@ -449,7 +507,14 @@ gsap.from(".panel-card", {
 });
 
 updateLanguageUI();
+setBackgroundVideo(currentSection, { force: true });
 setActiveSection(currentSection);
+
+if (backgroundVideo) {
+  backgroundVideo.addEventListener("ended", () => {
+    transitionBackgroundVideo(currentSection, { restartCurrent: true });
+  });
+}
 
 // Initialize audio manager
 AudioManager.init();
