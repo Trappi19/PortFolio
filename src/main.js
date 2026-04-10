@@ -3,6 +3,12 @@ import { applyTranslations, getLanguage, toggleLanguage } from "./i18n.js";
 import { getAllProjects } from "./projects-store.js";
 import AudioManager from "./audio.js";
 
+// Main orchestration file:
+// - Handles section navigation (wheel + top nav)
+// - Renders project cards/modal
+// - Applies language and theme updates per section
+// - Coordinates background video transitions and contact form behavior
+
 const scroller = document.getElementById("contentScroller");
 const sectionNodes = [...document.querySelectorAll("[data-section]")];
 const wheelButtons = [...document.querySelectorAll(".wheel-item")];
@@ -14,6 +20,7 @@ const progressBar = document.getElementById("scrollProgress");
 const projectGrid = document.getElementById("projectGrid");
 const contactForm = document.getElementById("contactForm");
 const wheelCoreLabel = document.querySelector(".ritual-wheel__core span");
+const oracleShell = document.querySelector(".oracle-shell");
 const backgroundVideo = document.getElementById("backgroundVideo");
 const backgroundFade = document.getElementById("backgroundFade");
 const sectionOrder = ["home", "about", "projects", "skills", "experience", "contact", "cv", "woolhaven"];
@@ -28,6 +35,8 @@ const sectionLabels = {
   woolhaven: "Woolhaven"
 };
 
+// Per-section background media mapping.
+// To change a section video, update only this object.
 const sectionVideos = {
   home: "Game teaser.mp4",
   about: "Cult of The Lamb † Reveal Trailer [tp-k9mnXutE].webm",
@@ -50,11 +59,46 @@ let wheelRotation = 0;
 let sectionTransitionLock = false;
 let backgroundTransitionTimer = null;
 let backgroundSwitchTimer = null;
+let shellResizeCleanupTimer = null;
+
+function clearShellResizeInlineStyles() {
+  if (!oracleShell) {
+    return;
+  }
+
+  oracleShell.style.removeProperty("height");
+  oracleShell.style.removeProperty("transition");
+}
+
+function animateOracleShellHeight(fromHeight) {
+  if (!oracleShell || window.innerWidth <= 1024 || !Number.isFinite(fromHeight) || fromHeight < 120) {
+    return;
+  }
+
+  window.clearTimeout(shellResizeCleanupTimer);
+  clearShellResizeInlineStyles();
+
+  const toHeight = oracleShell.getBoundingClientRect().height;
+  if (!Number.isFinite(toHeight) || toHeight < 120 || Math.abs(toHeight - fromHeight) < 2) {
+    return;
+  }
+
+  oracleShell.style.height = `${Math.round(fromHeight)}px`;
+
+  requestAnimationFrame(() => {
+    oracleShell.style.transition = "height 420ms cubic-bezier(0.22, 1, 0.36, 1)";
+    oracleShell.style.height = `${Math.round(toHeight)}px`;
+
+    shellResizeCleanupTimer = window.setTimeout(() => {
+      clearShellResizeInlineStyles();
+    }, 480);
+  });
+}
 
 function updateLanguageUI() {
   const lang = getLanguage();
   applyTranslations(document, lang);
-  langToggle.textContent = lang === "en" ? "FR" : "EN";
+  langToggle.textContent = lang === "en" ? "EN" : "FR";
   renderProjects();
 }
 
@@ -121,6 +165,8 @@ function renderProjects() {
   }
 
   projects.forEach((project) => {
+    // Project cards are intentionally built in JS so data stays centralized
+    // in src/data/default-projects.js without duplicated HTML markup.
     const card = document.createElement("article");
     card.className = "project-card";
     card.style.setProperty("--project-accent", project.accent || "#d94f04");
@@ -379,6 +425,7 @@ function setActiveSection(sectionId, options = {}) {
 
   sectionNodes.forEach((section) => {
     const isActive = section.id === sectionId;
+    // Keep one visible section at a time to simplify state and animations.
     section.hidden = !isActive;
     section.classList.toggle("is-active", section.id === sectionId);
   });
@@ -415,6 +462,7 @@ function setActiveSection(sectionId, options = {}) {
 }
 
 function navigateToSection(sectionId, options = {}) {
+  // Transition lock avoids overlapping animations when users scroll/click quickly.
   if (sectionTransitionLock && !options.skipLock) {
     return;
   }
@@ -422,6 +470,8 @@ function navigateToSection(sectionId, options = {}) {
   if (!document.getElementById(sectionId)) {
     return;
   }
+
+  const previousHeight = oracleShell?.getBoundingClientRect().height ?? 0;
 
   if (!options.skipLock) {
     sectionTransitionLock = true;
@@ -433,6 +483,7 @@ function navigateToSection(sectionId, options = {}) {
   transitionBackgroundVideo(sectionId);
 
   setActiveSection(sectionId, options);
+  animateOracleShellHeight(previousHeight);
 }
 
 allTargetButtons.forEach((button) => {
@@ -486,6 +537,7 @@ contactForm.addEventListener("submit", (event) => {
 
   const subject = encodeURIComponent(`Portfolio contact from ${name}`);
   const body = encodeURIComponent(`${message}\n\nFrom: ${name}\nEmail: ${email}`);
+  // Update this address to your real contact mailbox.
   window.location.href = `mailto:contacttrappi@gmail.com?subject=${subject}&body=${body}`;
 });
 

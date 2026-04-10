@@ -25,6 +25,7 @@
     </script>
   </head>
   <body data-page="portfolio">
+    <!-- Layers visuelles globales: fade de lancement, video de fond, atmosphere -->
     <div class="site-launch-fade" aria-hidden="true"></div>
     <video
       id="backgroundVideo"
@@ -38,6 +39,7 @@
     <div id="backgroundFade" class="background-fade" aria-hidden="true"></div>
     <div class="atmosphere-layer" aria-hidden="true"></div>
 
+    <!-- Header principal: branding + navigation haute + actions -->
     <header id="oracleHeader" class="oracle-header">
       <div class="brand-block">
         <p class="brand-kicker">Ritual Archive</p>
@@ -50,10 +52,11 @@
         <button class="top-nav__item" data-target="credits">Credits</button>
       </nav>
       <div class="header-actions">
-        <button id="langToggle" class="ritual-button" type="button">FR</button>
+        <button id="langToggle" class="ritual-button" type="button">EN</button>
       </div>
     </header>
 
+    <!-- Navigation laterale circulaire (desktop) -->
     <aside class="ritual-wheel" aria-label="Scene menu">
       <div class="ritual-wheel__core" aria-hidden="true"><span>Home</span></div>
       <button class="wheel-item is-active" data-target="home"><span class="wheel-item__sigil" aria-hidden="true"></span><span class="wheel-item__label">Invocation</span></button>
@@ -66,9 +69,11 @@
       <button class="wheel-item" data-target="woolhaven"><span class="wheel-item__sigil" aria-hidden="true"></span><span class="wheel-item__label">Woolhaven</span></button>
     </aside>
 
+    <!-- Contenu principal: une section active a la fois, pilotee par src/main.js -->
     <main class="oracle-shell">
       <div id="scrollProgress" class="scroll-progress" aria-hidden="true"></div>
       <div id="contentScroller" class="oracle-content" tabindex="0">
+        <!-- Section: Home -->
         <section id="home" class="panel-card panel-card--hero" data-section="home">
           <p class="panel-label" data-i18n="label.home">Invocation Gate</p>
           <h2 class="panel-title" data-i18n="home.title">I build interactive digital rituals.</h2>
@@ -80,6 +85,7 @@
           </div>
         </section>
 
+        <!-- Section: About -->
         <section id="about" class="panel-card" data-section="about">
           <p class="panel-label" data-i18n="label.about">Story</p>
           <h2 class="panel-title" data-i18n="about.title">About me</h2>
@@ -91,6 +97,7 @@
           </p>
         </section>
 
+        <!-- Section: Projects (grille rendue dynamiquement) -->
         <section id="projects" class="panel-card" data-section="projects">
           <div class="panel-headline-row">
             <div>
@@ -101,6 +108,7 @@
           <div id="projectGrid" class="project-grid" aria-live="polite"></div>
         </section>
 
+        <!-- Section: Skills -->
         <section id="skills" class="panel-card" data-section="skills">
           <p class="panel-label" data-i18n="label.skills">Arsenal</p>
           <h2 class="panel-title" data-i18n="skills.title">Skills</h2>
@@ -113,6 +121,7 @@
           </p>
         </section>
 
+        <!-- Section: Experience -->
         <section id="experience" class="panel-card" data-section="experience">
           <p class="panel-label" data-i18n="label.experience">Path</p>
           <h2 class="panel-title" data-i18n="experience.title">Experience and studies</h2>
@@ -132,6 +141,7 @@
           </ol>
         </section>
 
+        <!-- Section: Contact (envoi via mailto) -->
         <section id="contact" class="panel-card" data-section="contact">
           <p class="panel-label" data-i18n="label.contact">Whisper</p>
           <h2 class="panel-title" data-i18n="contact.title">Contact me</h2>
@@ -152,6 +162,7 @@
           </form>
         </section>
 
+        <!-- Section: CV / Resume -->
         <section id="cv" class="panel-card" data-section="cv">
           <p class="panel-label" data-i18n="label.cv">Scrolls</p>
           <h2 class="panel-title" data-i18n="cv.title">CV and resume</h2>
@@ -162,6 +173,7 @@
           </div>
         </section>
 
+        <!-- Section: Woolhaven (zone a tonalite plus legere) -->
         <section id="woolhaven" class="panel-card panel-card--wool" data-section="woolhaven">
           <p class="panel-label" data-i18n="label.woolhaven">Village</p>
           <h2 class="panel-title" data-i18n="woolhaven.title">Woolhaven corner</h2>
@@ -175,6 +187,7 @@
           </ul>
         </section>
 
+        <!-- Section: Credits -->
         <section id="credits" class="panel-card" data-section="credits">
           <p class="panel-label">Credits</p>
           <h2 class="panel-title">Credits and Attribution</h2>
@@ -197,7 +210,7 @@
       </div>
     </main>
 
-    <!-- Overlay Project Modal (Feature 3) -->
+    <!-- Modal projet: ouvre les details d'une carte projet -->
     <div id="projectModal" class="project-modal" aria-hidden="true">
       <div class="project-modal__backdrop"></div>
       <div class="project-modal__content">
@@ -219,7 +232,7 @@
       </div>
     </div>
 
-    <!-- Audio Control Panel -->
+    <!-- Panneau audio principal: titre piste + mute + replier -->
     <aside id="audioControlPanel" class="audio-control">
       <div class="audio-control__content">
         <div class="audio-control__info">
@@ -257,6 +270,7 @@
       </div>
     </aside>
 
+    <!-- Bouton flottant pour re-afficher le panneau audio -->
     <button
       id="audioPanelLauncher"
       class="audio-control-launcher"
@@ -270,10 +284,12 @@
       </svg>
     </button>
 
+    <!-- Indication utilisateur si autoplay navigateur bloque -->
     <div id="audioAutoplayHint" class="audio-autoplay-hint" hidden>
       Click to start audio
     </div>
 
+    <!-- Entree JS principale -->
     <script type="module" src="./src/main.js"></script>
   </body>
 </html>

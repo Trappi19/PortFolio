@@ -1,5 +1,7 @@
 const LANGUAGE_KEY = "cultPortfolioLanguage.v2";
 
+// Translation dictionary indexed by locale -> key.
+// Keep translation keys stable to avoid breaking existing data-i18n bindings.
 const dictionary = {
   en: {
     "label.home": "Invocation Gate",
@@ -51,8 +53,8 @@ const dictionary = {
     "label.contact": "Message",
     "label.cv": "Parchemins",
     "label.woolhaven": "Village",
-    "home.title": "Je cree des experiences web interactives.",
-    "home.copy": "Bienvenue dans mon univers: developpement logiciel, experimentation game dev et interfaces soignees qui restent performantes.",
+    "home.title": "Je cree des experiences pour apprendre de plus en plus.",
+    "home.copy": "Bienvenue dans mon univers: developpement logiciel, experimentation game dev, test informatique, bidouille de la techonolige et interfaces soignees qui restent (au mieux) performantes. Le seul moyen d'apprendre c'est d'appliquer et de confronté de vrai projets, personnel ou sur commande. Je suis ouvert a toute proposition de collaboration, freelance ou emploi. (en recherche de stage) ☺️",
     "home.ctaProjects": "Voir les projets",
     "about.title": "A propos",
     "about.copy1": "Je suis Sevan, developpeur full-stack de France. J aime les interfaces expressives et les bases techniques solides.",
@@ -105,16 +107,19 @@ export function toggleLanguage() {
 }
 
 export function translate(key, lang = getLanguage()) {
+  // Falls back to EN then key itself to avoid blank UI labels.
   const languagePack = dictionary[lang] || dictionary.en;
   return languagePack[key] || dictionary.en[key] || key;
 }
 
 export function applyTranslations(root = document, lang = getLanguage()) {
+  // Text content update
   root.querySelectorAll("[data-i18n]").forEach((node) => {
     const key = node.getAttribute("data-i18n");
     node.textContent = translate(key, lang);
   });
 
+  // Placeholder attribute update
   root.querySelectorAll("[data-i18n-placeholder]").forEach((node) => {
     const key = node.getAttribute("data-i18n-placeholder");
     node.setAttribute("placeholder", translate(key, lang));

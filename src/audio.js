@@ -1,5 +1,7 @@
 // Audio Manager Module
 const AudioManager = (() => {
+  // Playlist used for random background rotation.
+  // Add/remove tracks here only.
   const musicFiles = [
     "Cult of the Lamb [Official] - Anchordeep.mp3",
     "Cult of the Lamb [Official] - First Son, Baal.mp3",
@@ -71,7 +73,8 @@ const AudioManager = (() => {
     updateControlPanel();
   }
 
-  // Play background music
+  // Play background music.
+  // If no file is provided, keeps current one or picks a random track.
   function playMusic(filename = "") {
     if (isMuted) {
       return;
@@ -115,6 +118,7 @@ const AudioManager = (() => {
         setAutoplayHintVisible(false);
       })
       .catch(() => {
+        // Browser blocked autoplay: UI hint will ask for first user interaction.
         bgmAudio.muted = false;
         autoplayBlocked = true;
         setAutoplayHintVisible(true);
@@ -161,7 +165,7 @@ const AudioManager = (() => {
     }
   }
 
-  // Update control panel UI
+  // Update control panel UI from current in-memory audio state.
   function updateControlPanel() {
     const titleEl = document.getElementById("audioTitle");
     const muteBtn = document.getElementById("audioMuteBtn");
@@ -177,7 +181,8 @@ const AudioManager = (() => {
     }
   }
 
-  // Initialize audio manager
+  // Initialize audio manager and connect DOM handlers.
+  // Keep this function as the single startup entry point.
   function init() {
     setCurrentMusic(getRandomMusic());
 
@@ -208,7 +213,7 @@ const AudioManager = (() => {
       playMusic(nextMusic);
     });
 
-    // Attach SFX to all buttons
+    // Attach SFX globally so newly created buttons/links are also covered.
     document.addEventListener("click", (event) => {
       const target = event.target;
       const clickable = target instanceof Element ? target.closest("button, a") : null;
@@ -242,7 +247,7 @@ const AudioManager = (() => {
     }
   }
 
-  // Public API
+  // Public API used by src/main.js
   return {
     init,
     playSFX,
